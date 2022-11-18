@@ -19,9 +19,9 @@ local library = {
     ended = {},
     changed = {},
     folders = {
-        main = "splix",
-        assets = "splix/assets",
-        configs = "splix/configs"
+        main = "mcc",
+        assets = "mcc/assets",
+        configs = "mcc/configs"
     },
     shared = {
         initialized = false,
