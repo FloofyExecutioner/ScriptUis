@@ -113,7 +113,7 @@ do
             instance = frame
         elseif instanceType == "TextLabel" or instanceType == "textlabel" then
             local text = Drawing.new("Text")
-            text.Font = identifyexecutor() == 'ScriptWare' and Drawing.Fonts.UI or 3
+            text.Font = Drawing.Fonts.Monospace
             text.Visible = true
             text.Outline = true
             text.Center = false
