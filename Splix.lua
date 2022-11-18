@@ -602,7 +602,7 @@ do
             window.watermark = {visible = false}
             --
             local info = info or {}
-            local watermark_name = string.format(info.Title, 1, 100, 200)
+            local watermark_name = string.format(info.Title, 100, 200)
             --
             local text_bounds = utility:GetTextBounds(watermark_name, theme.textsize, theme.font)
             --
