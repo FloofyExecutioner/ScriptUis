@@ -602,7 +602,7 @@ do
             window.watermark = {visible = false}
             --
             local info = info or {}
-            local watermark_name = info.name or info.Name or info.title or info.Title or string.format("MCC | ping : %u | fps : %u", 1, 100, 200)
+            local watermark_name = string.format(info.Title, 1, 100, 200)
             --
             local text_bounds = utility:GetTextBounds(watermark_name, theme.textsize, theme.font)
             --
@@ -686,7 +686,7 @@ do
             --
             spawn(function()
                 while wait(0.1) do
-                    watermark_title.Text = string.format("$$ Splix || uid : %u || ping : %i || fps : %u", 1, tostring(library.shared.ping), library.shared.fps)
+                    watermark_title.Text = string.format(info.Title, 1, tostring(library.shared.ping), library.shared.fps)
                     window.watermark:UpdateSize()
                 end
             end)
@@ -945,7 +945,7 @@ do
             --
             library.shared.initialized = true
             --
-            window:Watermark()
+            --window:Watermark()
             window:KeybindsList()
             window:Cursor()
             --
