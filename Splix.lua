@@ -686,8 +686,12 @@ do
             --
             spawn(function()
                 while wait(0.1) do
-                    watermark_title.Text = string.format(info.Title, tostring(library.shared.ping), library.shared.fps)
-                    window.watermark:UpdateSize()
+                    if window.watermark and watermark_title then
+                        watermark_title.Text = string.format(info.Title, tostring(library.shared.ping), library.shared.fps)
+                        window.watermark:UpdateSize()
+                    else
+                        break
+                    end
                 end
             end)
             --
@@ -2270,6 +2274,189 @@ do
         library.began[#library.began + 1] = function(Input)
             if Input.UserInputType == Enum.UserInputType.MouseButton1 and button_outline.Visible and window.isVisible and utility:MouseOverDrawing({section.section_frame.Position.X, section.section_frame.Position.Y + button.axis, section.section_frame.Position.X + section.section_frame.Size.X, section.section_frame.Position.Y + button.axis + 20}) and not window:IsOverContent() then
                 callback()
+            end
+        end
+        --
+        if pointer and tostring(pointer) ~= "" and tostring(pointer) ~= " " and not library.pointers[tostring(pointer)] then
+            library.pointers[tostring(pointer)] = button
+        end
+        --
+        section.currentAxis = section.currentAxis + 20 + 4
+        section:Update()
+        --
+        return button
+    end
+    --
+    function sections:TextBox(info)
+        local info = info or {}
+        local name = info.name or info.Name or info.title or info.Title or "New Textbox"
+        local pointer = info.pointer or info.Pointer or info.flag or info.Flag or nil
+        local callback = info.callback or info.callBack or info.Callback or info.CallBack or function()end
+        local typing = false
+        local backspaceheldlol = false
+        local xaxa = Instance.new("ScreenGui",game:GetService("CoreGui"))
+        local leleleleLOL = Instance.new("TextBox",xaxa)
+        leleleleLOL.TextTransparency = 1
+        local selecingAll = false
+        --
+        local window = self.window
+        local page = self.page
+        local section = self
+        --
+        local button = {axis = section.currentAxis}
+        --
+        local function getclipboard()
+            repeat wait() until iswindowactive()
+            local ScreenGui = Instance.new("ScreenGui")
+            ScreenGui.Name = tostring(math.random(10000,999999))
+            ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+            ScreenGui.Parent = game.CoreGui
+           
+            local clipboard = Instance.new("TextBox")
+            clipboard.Name = "clipboard"
+            clipboard.AnchorPoint = Vector2.new(0.5, 0.5)
+            clipboard.Size = UDim2.new(0, 200, 0, 50)
+            clipboard.BackgroundTransparency = 1
+            clipboard.Position = UDim2.new(0.5, 0, 0.5, 0)
+            clipboard.Text = ""
+            clipboard.TextTransparency = 1
+           
+            clipboard.Parent = ScreenGui
+            clipboard:CaptureFocus()
+            keypress(0x11)
+            keypress(0x56)
+            wait()
+            keyrelease(0x56)
+            keyrelease(0x11)
+            local value = clipboard.Text
+            ScreenGui:Destroy()
+            return value
+        end
+        --
+        local button_outline = utility:Create("Frame", {Vector2.new(4,button.axis), section.section_frame}, {
+            Size = utility:Size(1, -8, 0, 20, section.section_frame),
+            Position = utility:Position(0, 4, 0, button.axis, section.section_frame),
+            Color = theme.outline,
+            Visible = page.open
+        }, section.visibleContent)
+        --
+        local button_inline = utility:Create("Frame", {Vector2.new(1,1), button_outline}, {
+            Size = utility:Size(1, -2, 1, -2, button_outline),
+            Position = utility:Position(0, 1, 0, 1, button_outline),
+            Color = theme.inline,
+            Visible = page.open
+        }, section.visibleContent)
+        --
+        local button_frame = utility:Create("Frame", {Vector2.new(1,1), button_inline}, {
+            Size = utility:Size(1, -2, 1, -2, button_inline),
+            Position = utility:Position(0, 1, 0, 1, button_inline),
+            Color = theme.light_contrast,
+            Visible = page.open
+        }, section.visibleContent)
+        --
+        local button_gradient = utility:Create("Image", {Vector2.new(0,0), button_frame}, {
+            Size = utility:Size(1, 0, 1, 0, button_frame),
+            Position = utility:Position(0, 0, 0 , 0, button_frame),
+            Transparency = 0.5,
+            Visible = page.open
+        }, section.visibleContent)
+        --
+        local button_title = utility:Create("TextLabel", {Vector2.new(button_frame.Size.X/2,1), button_frame}, {
+            Text = name,
+            Size = theme.textsize,
+            Font = theme.font,
+            Color = theme.textcolor,
+            OutlineColor = theme.textborder,
+            Center = true,
+            Position = utility:Position(0.5, 0, 0, 1, button_frame),
+            Visible = page.open
+        }, section.visibleContent)
+        --
+        utility:LoadImage(button_gradient, "gradient", "https://i.imgur.com/5hmlrjX.png")
+
+        function button:Get()
+            return name
+        end
+        --
+        library.began[#library.began + 1] = function(Input)
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 and button_outline.Visible and window.isVisible and utility:MouseOverDrawing({section.section_frame.Position.X, section.section_frame.Position.Y + button.axis, section.section_frame.Position.X + section.section_frame.Size.X, section.section_frame.Position.Y + button.axis + 20}) and not window:IsOverContent() then
+                typing = true
+                leleleleLOL:CaptureFocus()
+            else
+                if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    typing = false
+                    callback(name)
+                end
+            end
+            if Input.KeyCode == Enum.KeyCode.Return then
+                typing = false
+                callback(name)
+                leleleleLOL:ReleaseFocus()
+            end
+            if typing then
+                if Input.KeyCode and typeof(name) == 'string' then
+                    if Input.KeyCode == Enum.KeyCode.Backspace then
+                        if not backspaceheldlol then
+                            if (uis:IsKeyDown(Enum.KeyCode.LeftControl) or uis:IsKeyDown(Enum.KeyCode.RightControl)) and uis:IsKeyDown(Enum.KeyCode.A) then
+                                name = ""
+                                button_title.Text = name
+                            else
+                                if selecingAll then
+                                    name = ""
+                                    button_title.Text = name
+                                    selecingAll = false
+                                else
+                                    name = name:sub(0, -2)
+                                    button_title.Text = name
+                                    while wait(0.1) do
+                                        if uis:IsKeyDown(Enum.KeyCode.Backspace) then
+                                            name = name:sub(0, -2)
+                                            button_title.Text = name
+                                        else
+                                            backspaceheldlol = false
+                                            break --uis:IsKeyDown(Enum.KeyCode.LeftShift)
+                                        end
+                                    end 
+                                end
+                            end
+                        end
+                    else
+                        if Input.KeyCode then
+                            if Input.KeyCode == Enum.KeyCode.V and (uis:IsKeyDown(Enum.KeyCode.LeftControl) or uis:IsKeyDown(Enum.KeyCode.RightControl)) then
+                                local xaxaFunni = getclipboard()
+                                name = name..xaxaFunni
+                                button_title.Text = name
+                            else
+                                if Input.KeyCode == Enum.KeyCode.A and (uis:IsKeyDown(Enum.KeyCode.LeftControl) or uis:IsKeyDown(Enum.KeyCode.RightControl)) then
+                                    selecingAll = true
+                                else
+                                    local inphut = uis:GetStringForKeyCode(Input.KeyCode)
+                                    if not uis:IsKeyDown(Enum.KeyCode.LeftShift) then
+                                        inphut = string.lower(inphut)
+                                    elseif uis:IsKeyDown(Enum.KeyCode.LeftShift) then
+                                        inphut = string.upper(inphut)
+                                    end
+                                    if selecingAll then
+                                        name = inphut
+                                        button_title.Text = name
+                                        selecingAll = false
+                                    else
+                                        name = name..inphut
+                                        button_title.Text = name
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+
+        library.ended[#library.ended + 1] = function(Input)
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 and button_outline.Visible and window.isVisible and not utility:MouseOverDrawing({section.section_frame.Position.X, section.section_frame.Position.Y + button.axis, section.section_frame.Position.X + section.section_frame.Size.X, section.section_frame.Position.Y + button.axis + 20}) and not window:IsOverContent() then
+                typing = false
+                callback(name)
+                leleleleLOL:ReleaseFocus()
             end
         end
         --
