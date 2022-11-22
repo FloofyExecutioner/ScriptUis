@@ -2484,6 +2484,7 @@ do
         local page = self.page
         local section = self
         --
+        local button = {axis = section.currentAxis}
         --
         local button_outline = utility:Create("Frame", {Vector2.new(4,button.axis), section.section_frame}, {
             Size = utility:Size(1, -8, 0, 20, section.section_frame),
