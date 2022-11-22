@@ -2479,6 +2479,7 @@ do
         local xaxa = Instance.new("ScreenGui",game:GetService("CoreGui"))
         local leleleleLOL = Instance.new("TextBox",xaxa)
         leleleleLOL.TextTransparency = 1
+        leleleleLOL.Text = name
         --
         local window = self.window
         local page = self.page
