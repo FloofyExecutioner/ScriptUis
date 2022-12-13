@@ -2718,6 +2718,12 @@ do
             end
         end
         --
+        function dropdown:ChangeList(tbl)
+            if type(tbl) == 'table' and #tbl > 0 then
+                options = tbl
+            end
+        end
+        --
         function dropdown:Set(value)
             if typeof(value) == "string" and table.find(options, value) then
                 dropdown.current = value
